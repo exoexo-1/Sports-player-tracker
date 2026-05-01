@@ -1,0 +1,21 @@
+{
+  "video_source": "video_football.mp4",
+  "model": "yolov8x.pt",
+  "tracker": "botsort_with_reid",
+  "id_stabilizer": "enabled",
+  "total_frames": 158,
+  "fps_original": 23.976023976023978,
+  "resolution": "768x432",
+  "total_stable_ids": 12,
+  "peak_simultaneous": 9,
+  "avg_simultaneous": 5.96,
+  "ball_detected_frames": 59,
+  "ball_detection_rate": 0.373,
+  "conf_person": 0.35,
+  "conf_ball": 0.25,
+  "track_buffer_frames": 90,
+  "appearance_thresh": 0.25,
+  "imgsz": 1280,
+  "processing_time_s": 341.8,
+  "processing_fps": 0.5
+}

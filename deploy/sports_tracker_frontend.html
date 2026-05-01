@@ -1,0 +1,1171 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .app {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--color-text-primary);
+    background: transparent;
+    min-height: 100vh;
+    padding: 0 0 3rem;
+  }
+
+  .hero {
+    background: var(--color-background-secondary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    padding: 2rem 1.5rem 1.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+    margin-bottom: 0.4rem;
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 0.75rem;
+  }
+
+  .badge-model { background: #E6F1FB; color: #0C447C; }
+  .badge-tracker { background: #EAF3DE; color: #27500A; }
+  .badge-reid { background: #EEEDFE; color: #3C3489; }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-model { background: #0C447C; color: #B5D4F4; }
+    .badge-tracker { background: #27500A; color: #C0DD97; }
+    .badge-reid { background: #3C3489; color: #CECBF6; }
+  }
+
+  .main { padding: 1.5rem; }
+
+  .upload-zone {
+    border: 1.5px dashed var(--color-border-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: var(--color-background-primary);
+  }
+
+  .upload-zone:hover, .upload-zone.drag { border-color: #378ADD; background: #E6F1FB20; }
+  @media (prefers-color-scheme: dark) { .upload-zone:hover, .upload-zone.drag { background: #0C447C20; } }
+
+  .upload-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--color-background-secondary);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 20px;
+  }
+
+  .upload-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .upload-sub { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 1rem; }
+
+  .upload-btn {
+    background: var(--color-text-primary);
+    color: var(--color-background-primary);
+    border: none;
+    padding: 8px 20px;
+    border-radius: var(--border-radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .upload-btn:hover { opacity: 0.85; }
+
+  .constraints {
+    display: flex; gap: 16px; margin-top: 1rem; justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .constraint-pill {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    background: var(--color-background-secondary);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .video-preview {
+    background: #000;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1rem;
+    aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .video-preview video {
+    width: 100%; height: 100%; object-fit: contain;
+  }
+
+  .video-info-strip {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem;
+  }
+
+  .vinfo {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    background: var(--color-background-secondary);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .run-btn {
+    width: 100%;
+    background: var(--color-text-primary);
+    color: var(--color-background-primary);
+    border: none;
+    padding: 14px;
+    border-radius: var(--border-radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    transition: opacity 0.15s;
+  }
+
+  .run-btn:hover:not(:disabled) { opacity: 0.85; }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .progress-area {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem;
+    margin-top: 1rem;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-step { font-size: 13px; font-weight: 500; }
+  .progress-pct { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--color-text-secondary); }
+
+  .progress-bar-bg {
+    width: 100%; height: 6px;
+    background: var(--color-background-primary);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-text-primary);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .log-line {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 2rem 0 0.75rem;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .stat-card {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 1rem;
+  }
+
+  .stat-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .stat-value { font-size: 22px; font-weight: 500; font-family: 'Space Mono', monospace; }
+  .stat-unit { font-size: 11px; color: var(--color-text-tertiary); font-family: 'Space Mono', monospace; }
+  .stat-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  .output-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 500px) { .output-grid { grid-template-columns: 1fr; } }
+
+  .output-card {
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-background-primary);
+    overflow: hidden;
+  }
+
+  .output-card-header {
+    padding: 10px 12px;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .output-card-title { font-size: 12px; font-weight: 500; }
+  .output-card-type {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    color: var(--color-text-tertiary);
+    background: var(--color-background-secondary);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .output-card-body {
+    padding: 1rem;
+    aspect-ratio: 16/10;
+    background: var(--color-background-secondary);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .output-card-body img {
+    max-width: 100%; max-height: 100%; object-fit: contain;
+  }
+
+  .output-card-footer {
+    padding: 8px 12px;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .dl-btn {
+    font-size: 11px;
+    color: #185FA5;
+    background: #E6F1FB;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+  }
+
+  @media (prefers-color-scheme: dark) { .dl-btn { background: #0C447C; color: #B5D4F4; } }
+  .dl-btn:hover { opacity: 0.8; }
+
+  .video-result-card {
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .video-result-header {
+    padding: 10px 12px;
+    background: var(--color-background-secondary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .video-result-title { font-size: 13px; font-weight: 500; }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px;
+    color: #3B6D11;
+    background: #EAF3DE;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  @media (prefers-color-scheme: dark) { .live-badge { background: #27500A; color: #C0DD97; } }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: #639922;
+    border-radius: 50%;
+  }
+
+  .model-compare-card {
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .compare-header {
+    padding: 10px 12px;
+    background: var(--color-background-secondary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .compare-models {
+    display: flex; gap: 8px;
+  }
+
+  .model-pill {
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .model-pill-v8 { background: #E6F1FB; color: #0C447C; }
+  .model-pill-v9 { background: #EEEDFE; color: #3C3489; }
+  @media (prefers-color-scheme: dark) {
+    .model-pill-v8 { background: #0C447C; color: #B5D4F4; }
+    .model-pill-v9 { background: #3C3489; color: #CECBF6; }
+  }
+
+  .canvas-container { padding: 1rem; }
+
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-background-primary);
+  }
+
+  .empty-icon { font-size: 32px; margin-bottom: 0.75rem; opacity: 0.4; }
+  .empty-title { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .empty-sub { font-size: 12px; color: var(--color-text-tertiary); }
+
+  .config-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .config-field label {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    display: block; margin-bottom: 4px;
+  }
+
+  .config-field input, .config-field select {
+    width: 100%;
+    font-size: 12px;
+    padding: 7px 10px;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .divider {
+    height: 0.5px;
+    background: var(--color-border-tertiary);
+    margin: 1.5rem 0;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    margin-bottom: 1.25rem;
+  }
+
+  .tab {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 14px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -0.5px;
+    transition: color 0.1s;
+  }
+
+  .tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); }
+  .tab:hover:not(.active) { color: var(--color-text-primary); }
+
+  .pipeline-steps {
+    display: flex; gap: 0; margin-bottom: 1rem; overflow: hidden;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+  }
+
+  .pipe-step {
+    flex: 1; padding: 10px 8px; text-align: center;
+    font-size: 10px; font-weight: 500;
+    border-right: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-primary);
+    color: var(--color-text-tertiary);
+    transition: all 0.3s;
+  }
+
+  .pipe-step:last-child { border-right: none; }
+  .pipe-step.done { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .pipe-step.active { background: var(--color-text-primary); color: var(--color-background-primary); }
+
+  .pipe-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    display: block; margin-bottom: 2px;
+  }
+
+  .notification {
+    padding: 10px 14px;
+    border-radius: var(--border-radius-md);
+    font-size: 12px;
+    margin-top: 10px;
+    border: 0.5px solid;
+  }
+
+  .notif-info { background: #E6F1FB; border-color: #B5D4F4; color: #185FA5; }
+  .notif-success { background: #EAF3DE; border-color: #C0DD97; color: #3B6D11; }
+  @media (prefers-color-scheme: dark) {
+    .notif-info { background: #042C53; border-color: #185FA5; color: #B5D4F4; }
+    .notif-success { background: #173404; border-color: #3B6D11; color: #C0DD97; }
+  }
+
+  .chart-placeholder {
+    width: 100%; height: 120px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-bar {
+    display: flex; gap: 8px;
+    padding: 12px;
+    background: var(--color-background-secondary);
+    border-top: 0.5px solid var(--color-border-tertiary);
+  }
+
+  .footer-stat {
+    flex: 1;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .footer-stat-val { font-size: 16px; font-weight: 700; }
+  .footer-stat-lbl { font-size: 9px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; }
+</style>
+
+<div class="app">
+  <div class="hero">
+    <div class="hero-tag">CV Pipeline · Multi-Object Tracking</div>
+    <div class="hero-title">Sports Tracker</div>
+    <div class="hero-sub">YOLOv8x + BoT-SORT + Re-ID · Persistent ID Assignment</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+      <span class="badge badge-model">YOLOv8x</span>
+      <span class="badge badge-tracker">BoT-SORT</span>
+      <span class="badge badge-reid">OSNet Re-ID</span>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div id="upload-phase">
+      <div class="section-title">Input Video</div>
+      <div class="upload-zone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">⬆</div>
+        <div class="upload-title">Drop your sports video here</div>
+        <div class="upload-sub">MP4, MOV, AVI — up to 60 seconds</div>
+        <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose file</button>
+        <div class="constraints">
+          <span class="constraint-pill">Max 60 sec</span>
+          <span class="constraint-pill">MP4 / MOV / AVI</span>
+          <span class="constraint-pill">Up to 4K</span>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="video/*" style="display:none" onchange="handleFile(event)">
+    </div>
+
+    <div id="video-preview-phase" style="display:none;">
+      <div class="video-preview">
+        <video id="previewVideo" controls></video>
+      </div>
+      <div class="video-info-strip" id="videoInfoStrip"></div>
+
+      <div class="section-title">Configuration</div>
+      <div class="config-row">
+        <div class="config-field">
+          <label>Model</label>
+          <select id="cfgModel">
+            <option>yolov8x.pt (recommended)</option>
+            <option>yolov9e.pt (slower, comparable)</option>
+          </select>
+        </div>
+        <div class="config-field">
+          <label>Tracker</label>
+          <select id="cfgTracker">
+            <option>botsort + Re-ID (recommended)</option>
+            <option>bytetrack (faster, less stable)</option>
+          </select>
+        </div>
+      </div>
+      <div class="config-row">
+        <div class="config-field">
+          <label>Person confidence</label>
+          <input type="number" value="0.35" step="0.05" min="0.1" max="0.9" id="cfgConf">
+        </div>
+        <div class="config-field">
+          <label>Ball confidence</label>
+          <input type="number" value="0.25" step="0.05" min="0.1" max="0.9" id="cfgBallConf">
+        </div>
+      </div>
+
+      <button class="run-btn" id="runBtn" onclick="startProcessing()">Run Detection &amp; Tracking</button>
+    </div>
+
+    <div id="processing-phase" style="display:none;">
+      <div class="section-title">Pipeline</div>
+      <div class="pipeline-steps" id="pipelineSteps">
+        <div class="pipe-step" id="ps1"><span class="pipe-num">1</span>Load</div>
+        <div class="pipe-step" id="ps2"><span class="pipe-num">2</span>Detect</div>
+        <div class="pipe-step" id="ps3"><span class="pipe-num">3</span>Track</div>
+        <div class="pipe-step" id="ps4"><span class="pipe-num">4</span>Stabilize</div>
+        <div class="pipe-step" id="ps5"><span class="pipe-num">5</span>Render</div>
+        <div class="pipe-step" id="ps6"><span class="pipe-num">6</span>Analyze</div>
+      </div>
+
+      <div class="progress-area">
+        <div class="progress-label">
+          <span class="progress-step" id="progressStep">Initializing...</span>
+          <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="log-line" id="logLine">Starting pipeline...</div>
+      </div>
+
+      <div class="notification notif-info" style="margin-top:10px;">
+        <strong>Note:</strong> In a deployed version, this runs the Python backend (YOLOv8x + BoT-SORT). This demo simulates the pipeline and shows how outputs would be displayed.
+      </div>
+    </div>
+
+    <div id="results-phase" style="display:none;">
+      <div class="notification notif-success">
+        Pipeline complete · All outputs ready below
+      </div>
+
+      <div class="section-title" style="margin-top:1.5rem;">Detection Stats</div>
+      <div class="stat-grid" id="statsGrid"></div>
+
+      <div class="section-title">Annotated Output Video</div>
+      <div class="video-result-card">
+        <div class="video-result-header">
+          <span class="video-result-title">Tracked video with bounding boxes &amp; IDs</span>
+          <span class="live-badge"><span class="live-dot"></span>Ready</span>
+        </div>
+        <div style="background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;">
+          <video id="resultVideo" controls style="max-width:100%;max-height:100%;"></video>
+          <div id="videoOverlay" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:rgba(0,0,0,0.7);">
+            <div style="font-size:13px;color:#fff;font-weight:500;">Output video preview</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);">In production: tracked output MP4 renders here</div>
+          </div>
+        </div>
+        <div class="footer-bar" id="videoFooter"></div>
+      </div>
+
+      <div class="section-title">Analysis Outputs</div>
+      <div class="tab-bar">
+        <button class="tab active" onclick="switchTab(this,'tab-visuals')">Visualizations</button>
+        <button class="tab" onclick="switchTab(this,'tab-compare')">Model Comparison</button>
+        <button class="tab" onclick="switchTab(this,'tab-json')">Stats JSON</button>
+      </div>
+
+      <div id="tab-visuals">
+        <div class="output-grid" id="outputGrid"></div>
+      </div>
+
+      <div id="tab-compare" style="display:none;">
+        <div class="model-compare-card">
+          <div class="compare-header">
+            <span style="font-size:12px;font-weight:500;">Person detection count per frame</span>
+            <div class="compare-models">
+              <span class="model-pill model-pill-v8">yolov8x</span>
+              <span class="model-pill model-pill-v9">yolov9e</span>
+            </div>
+          </div>
+          <div class="canvas-container">
+            <canvas id="compareChart" width="600" height="140" style="width:100%;height:140px;"></canvas>
+          </div>
+          <div style="padding:10px 12px;border-top:0.5px solid var(--color-border-tertiary);display:flex;gap:16px;">
+            <div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);">YOLOv8x avg</div>
+              <div style="font-size:14px;font-weight:500;font-family:'Space Mono',monospace;" id="v8avg">—</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);">YOLOv9e avg</div>
+              <div style="font-size:14px;font-weight:500;font-family:'Space Mono',monospace;" id="v9avg">—</div>
+            </div>
+            <div>
+              <div style="font-size:10px;color:var(--color-text-tertiary);">Verdict</div>
+              <div style="font-size:12px;font-weight:500;" id="compareVerdict">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-json" style="display:none;">
+        <div style="border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;">
+          <div style="padding:8px 12px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:500;">stats.json</span>
+            <button class="dl-btn" id="dlJson">Download</button>
+          </div>
+          <pre id="jsonDisplay" style="padding:1rem;font-family:'Space Mono',monospace;font-size:11px;overflow-x:auto;line-height:1.7;color:var(--color-text-primary);"></pre>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="run-btn" style="flex:1;min-width:120px;" onclick="resetAll()">Process new video</button>
+        <button class="dl-btn" style="padding:14px 20px;font-size:13px;" onclick="downloadAll()">Download all outputs</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let videoFile = null;
+let simulatedStats = null;
+let activeTab = 'tab-visuals';
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  videoFile = file;
+  document.getElementById('upload-phase').style.display = 'none';
+  document.getElementById('video-preview-phase').style.display = 'block';
+
+  const url = URL.createObjectURL(file);
+  const vid = document.getElementById('previewVideo');
+  vid.src = url;
+
+  vid.onloadedmetadata = () => {
+    const dur = vid.duration;
+    const w = vid.videoWidth;
+    const h = vid.videoHeight;
+    const fps = 'auto';
+    const strip = document.getElementById('videoInfoStrip');
+    strip.innerHTML = `
+      <span class="vinfo">${file.name}</span>
+      <span class="vinfo">${w}×${h}</span>
+      <span class="vinfo">${dur.toFixed(1)}s</span>
+      <span class="vinfo">${(file.size/1024/1024).toFixed(1)} MB</span>
+      ${dur > 60 ? '<span class="vinfo" style="color:#A32D2D;background:#FCEBEB;">⚠ exceeds 60s limit</span>' : ''}
+    `;
+    const runBtn = document.getElementById('runBtn');
+    if (dur > 60) runBtn.disabled = true;
+    else runBtn.disabled = false;
+  };
+}
+
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault(); dropzone.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('fileInput').files = dt.files;
+    handleFile({ target: { files: dt.files } });
+  }
+});
+
+
+function showRealResults(data) {
+  document.getElementById('processing-phase').style.display = 'none';
+  document.getElementById('results-phase').style.display = 'block';
+  document.getElementById("videoOverlay").style.display = "none";
+
+  // show output video
+  const vid = document.getElementById('resultVideo');
+  vid.src = "http://127.0.0.1:8000/" + data.video;
+  vid.load();   // 🔥 IMPORTANT
+
+  // load stats JSON
+  fetch("http://127.0.0.1:8000/" + data.stats)
+    .then(res => res.json())
+    .then(stats => {
+      document.getElementById('jsonDisplay').textContent = JSON.stringify(stats, null, 2);
+    });
+    document.getElementById('outputGrid').innerHTML = `
+      <img src="http://127.0.0.1:8000/${data.heatmap}" style="width:100%;margin-bottom:10px;">
+      <img src="http://127.0.0.1:8000/${data.trajectory}" style="width:100%;margin-bottom:10px;">
+    `;
+}
+
+async function startProcessing() {
+  if (!videoFile) return;
+
+  document.getElementById('processing-phase').style.display = 'block';
+
+  const formData = new FormData();
+  formData.append("file", videoFile);
+
+  // 🔥 fake progress loop
+  let progress = 0;
+  const progressFill = document.getElementById('progressFill');
+  const progressPct = document.getElementById('progressPct');
+  const progressStep = document.getElementById('progressStep');
+
+  const interval = setInterval(() => {
+    if (progress < 90) {
+      progress += 5;
+      progressFill.style.width = progress + "%";
+      progressPct.textContent = progress + "%";
+
+      if (progress > 20) progressStep.textContent = "Detecting...";
+      if (progress > 40) progressStep.textContent = "Tracking...";
+      if (progress > 60) progressStep.textContent = "Rendering...";
+      if (progress > 80) progressStep.textContent = "Analyzing...";
+    }
+  }, 1000);
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/process", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    clearInterval(interval);
+
+    // finish progress
+    progressFill.style.width = "100%";
+    progressPct.textContent = "100%";
+    progressStep.textContent = "Done";
+
+    showRealResults(data);
+
+  } catch (err) {
+    clearInterval(interval);
+    console.error(err);
+    alert("Error processing video");
+  }
+}
+
+
+
+const pipelineLog = [
+  [0, 'ps1', 'Loading video & extracting metadata...'],
+  [8, 'ps2', 'Running YOLOv8x detection · conf=0.35...'],
+  [20, 'ps2', 'Detecting persons & ball (class 0, 32)...'],
+  [32, 'ps3', 'BoT-SORT tracker initializing · Re-ID: OSNet-0.25...'],
+  [45, 'ps3', 'Global Motion Compensation · sparseOptFlow enabled...'],
+  [58, 'ps4', 'IDStabilizer layer · spatial_threshold=100px...'],
+  [68, 'ps4', 'Resolving ID switches · match_thresh=0.80...'],
+  [78, 'ps5', 'Rendering annotated frames · HUD overlay...'],
+  [88, 'ps6', 'Generating heatmap · trajectory plots...'],
+  [94, 'ps6', 'Running model comparison · YOLOv8x vs YOLOv9e...'],
+  [100, null, 'Done!'],
+];
+
+// function simulatePipeline() {
+//   let step = 0;
+//   const interval = setInterval(() => {
+//     const [pct, pipeId, log] = pipelineLog[Math.min(step, pipelineLog.length - 1)];
+//     document.getElementById('progressFill').style.width = pct + '%';
+//     document.getElementById('progressPct').textContent = pct + '%';
+//     document.getElementById('logLine').textContent = '› ' + log;
+
+//     const stepNames = ['Loading', 'Detecting', 'Tracking', 'Stabilizing', 'Rendering', 'Analyzing'];
+//     document.getElementById('progressStep').textContent = stepNames[Math.min(step, 5)];
+
+//     if (pipeId) {
+//       document.getElementById(pipeId).classList.add('active');
+//       const prevId = 'ps' + (parseInt(pipeId[2]) - 1);
+//       if (parseInt(pipeId[2]) > 1) {
+//         const prev = document.getElementById(prevId);
+//         if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+//       }
+//     }
+
+//     step++;
+//     if (step >= pipelineLog.length) {
+//       clearInterval(interval);
+//       for (let i = 1; i <= 6; i++) {
+//         const el = document.getElementById('ps' + i);
+//         el.classList.remove('active'); el.classList.add('done');
+//       }
+//       setTimeout(showResults, 600);
+//     }
+//   }, 420);
+// }
+
+// function generateStats() {
+//   const totalFrames = 736;
+//   const fps = 59.94;
+//   const dur = 12.3;
+//   return {
+//     video_source: videoFile ? videoFile.name : 'video.mp4',
+//     model: 'yolov8x.pt',
+//     tracker: 'botsort_with_reid',
+//     id_stabilizer: 'enabled',
+//     total_frames: totalFrames,
+//     fps_original: fps,
+//     resolution: '1080x1920',
+//     total_stable_ids: 21,
+//     peak_simultaneous: 14,
+//     avg_simultaneous: 8.81,
+//     ball_detected_frames: 209,
+//     ball_detection_rate: 0.284,
+//     conf_person: 0.35,
+//     conf_ball: 0.25,
+//     track_buffer_frames: 90,
+//     appearance_thresh: 0.25,
+//     imgsz: 1280,
+//     processing_time_s: 77.93,
+//     processing_fps: 9.4
+//   };
+// }
+
+// function showResults() {
+//   document.getElementById('processing-phase').style.display = 'none';
+//   document.getElementById('results-phase').style.display = 'block';
+
+//   simulatedStats = generateStats();
+
+//   const sg = document.getElementById('statsGrid');
+//   const statsToShow = [
+//     { label: 'Unique IDs tracked', value: simulatedStats.total_stable_ids, unit: '', sub: 'stable IDs' },
+//     { label: 'Peak simultaneous', value: simulatedStats.peak_simultaneous, unit: '', sub: 'players/frame' },
+//     { label: 'Avg simultaneous', value: simulatedStats.avg_simultaneous.toFixed(1), unit: '', sub: 'players/frame' },
+//     { label: 'Ball detection', value: (simulatedStats.ball_detection_rate * 100).toFixed(1), unit: '%', sub: `${simulatedStats.ball_detected_frames} frames` },
+//     { label: 'Total frames', value: simulatedStats.total_frames, unit: '', sub: `${simulatedStats.fps_original.toFixed(1)} fps` },
+//     { label: 'Processing speed', value: simulatedStats.processing_fps, unit: 'fps', sub: `${simulatedStats.processing_time_s}s total` },
+//   ];
+
+//   sg.innerHTML = statsToShow.map(s => `
+//     <div class="stat-card">
+//       <div class="stat-label">${s.label}</div>
+//       <div><span class="stat-value">${s.value}</span><span class="stat-unit"> ${s.unit}</span></div>
+//       <div class="stat-sub">${s.sub}</div>
+//     </div>
+//   `).join('');
+
+//   const vf = document.getElementById('videoFooter');
+//   vf.innerHTML = `
+//     <div class="footer-stat"><div class="footer-stat-val">21</div><div class="footer-stat-lbl">IDs</div></div>
+//     <div class="footer-stat"><div class="footer-stat-val">736</div><div class="footer-stat-lbl">Frames</div></div>
+//     <div class="footer-stat"><div class="footer-stat-val">9.4</div><div class="footer-stat-lbl">Proc fps</div></div>
+//     <div class="footer-stat"><div class="footer-stat-val">28%</div><div class="footer-stat-lbl">Ball det.</div></div>
+//   `;
+
+//   const outputCards = [
+//     { title: 'Movement Heatmap', type: 'PNG', key: 'heatmap', color: '#FF6B35', desc: 'Player density overlaid on field frame' },
+//     { title: 'Trajectory Paths', type: 'PNG', key: 'traj', color: '#378ADD', desc: 'Top 20 most active track paths' },
+//     { title: 'Ball Trajectory', type: 'PNG', key: 'ball', color: '#00BCD4', desc: 'Ball path coloured by time (plasma)' },
+//     { title: 'Count Over Time', type: 'PNG', key: 'count', color: '#4CAF50', desc: 'Active tracked IDs per frame with rolling avg' },
+//   ];
+
+//   const og = document.getElementById('outputGrid');
+//   og.innerHTML = outputCards.map(c => `
+//     <div class="output-card">
+//       <div class="output-card-header">
+//         <span class="output-card-title">${c.title}</span>
+//         <span class="output-card-type">${c.type}</span>
+//       </div>
+//       <div class="output-card-body">
+//         <canvas id="canvas-${c.key}" width="300" height="180" style="width:100%;height:100%;"></canvas>
+//       </div>
+//       <div class="output-card-footer">
+//         <span style="font-size:10px;color:var(--color-text-tertiary);">${c.desc}</span>
+//         <button class="dl-btn" onclick="dlPlaceholder('${c.key}')">Download</button>
+//       </div>
+//     </div>
+//   `).join('');
+
+//   setTimeout(() => {
+//     drawHeatmap();
+//     drawTrajectory();
+//     drawBall();
+//     drawCountOverTime();
+//     drawCompare();
+//   }, 100);
+
+//   document.getElementById('jsonDisplay').textContent = JSON.stringify(simulatedStats, null, 2);
+// }
+
+// function drawHeatmap() {
+//   const c = document.getElementById('canvas-heatmap');
+//   if (!c) return;
+//   const ctx = c.getContext('2d');
+//   const w = c.width, h = c.height;
+//   ctx.fillStyle = '#1a1a2e';
+//   ctx.fillRect(0, 0, w, h);
+//   const pts = [];
+//   for (let i = 0; i < 400; i++) {
+//     pts.push({ x: w * (0.15 + 0.7 * Math.random()), y: h * (0.1 + 0.8 * Math.random()), r: 20 + Math.random() * 30, a: Math.random() });
+//   }
+//   pts.forEach(p => {
+//     const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+//     const hue = 240 - p.a * 240;
+//     g.addColorStop(0, `hsla(${hue},100%,60%,${0.3 + p.a * 0.4})`);
+//     g.addColorStop(1, 'transparent');
+//     ctx.fillStyle = g;
+//     ctx.fillRect(0, 0, w, h);
+//   });
+//   ctx.fillStyle = 'rgba(255,255,255,0.07)';
+//   ctx.font = '9px Space Mono, monospace';
+//   ctx.fillText('movement heatmap simulation', 8, h - 8);
+// }
+
+// function drawTrajectory() {
+//   const c = document.getElementById('canvas-traj');
+//   if (!c) return;
+//   const ctx = c.getContext('2d');
+//   const w = c.width, h = c.height;
+//   ctx.fillStyle = '#0d1117';
+//   ctx.fillRect(0, 0, w, h);
+//   const colors = ['#4fc3f7','#81c784','#ffb74d','#e57373','#ce93d8','#80cbc4','#fff176','#f48fb1'];
+//   for (let i = 0; i < 15; i++) {
+//     const col = colors[i % colors.length];
+//     ctx.strokeStyle = col;
+//     ctx.lineWidth = 1.5;
+//     ctx.globalAlpha = 0.75;
+//     ctx.beginPath();
+//     let x = w * (0.1 + 0.8 * Math.random());
+//     let y = h * (0.1 + 0.8 * Math.random());
+//     ctx.moveTo(x, y);
+//     for (let j = 0; j < 30; j++) {
+//       x += (Math.random() - 0.5) * 25;
+//       y += (Math.random() - 0.5) * 18;
+//       x = Math.max(5, Math.min(w - 5, x));
+//       y = Math.max(5, Math.min(h - 5, y));
+//       ctx.lineTo(x, y);
+//     }
+//     ctx.stroke();
+//     ctx.globalAlpha = 1;
+//     ctx.fillStyle = col;
+//     ctx.beginPath();
+//     ctx.arc(x, y, 3, 0, Math.PI * 2);
+//     ctx.fill();
+//     ctx.fillStyle = 'rgba(255,255,255,0.6)';
+//     ctx.font = '8px sans-serif';
+//     ctx.fillText('ID ' + (i + 1), x + 5, y + 3);
+//   }
+// }
+
+// function drawBall() {
+//   const c = document.getElementById('canvas-ball');
+//   if (!c) return;
+//   const ctx = c.getContext('2d');
+//   const w = c.width, h = c.height;
+//   ctx.fillStyle = '#0d1117';
+//   ctx.fillRect(0, 0, w, h);
+//   const pts = [];
+//   let x = w * 0.1, y = h * 0.5;
+//   for (let i = 0; i < 60; i++) {
+//     x += w * 0.012 + (Math.random() - 0.3) * 10;
+//     y += (Math.random() - 0.5) * 20;
+//     x = Math.max(5, Math.min(w - 5, x));
+//     y = Math.max(5, Math.min(h - 5, y));
+//     pts.push({ x, y, t: i / 60 });
+//   }
+//   ctx.lineWidth = 1;
+//   ctx.strokeStyle = 'rgba(0,255,255,0.4)';
+//   ctx.beginPath();
+//   pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+//   ctx.stroke();
+//   pts.forEach(p => {
+//     const hue = 280 - p.t * 280;
+//     ctx.fillStyle = `hsl(${hue},100%,65%)`;
+//     ctx.beginPath();
+//     ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+//     ctx.fill();
+//   });
+// }
+
+// function drawCountOverTime() {
+//   const c = document.getElementById('canvas-count');
+//   if (!c) return;
+//   const ctx = c.getContext('2d');
+//   const w = c.width, h = c.height;
+//   const pad = { t: 12, b: 20, l: 28, r: 10 };
+//   ctx.fillStyle = 'transparent';
+//   ctx.clearRect(0, 0, w, h);
+
+//   const data = [];
+//   let v = 5;
+//   for (let i = 0; i < 80; i++) {
+//     v += (Math.random() - 0.45) * 2;
+//     v = Math.max(1, Math.min(14, v));
+//     data.push(Math.round(v));
+//   }
+
+//   const maxV = 14;
+//   const iW = w - pad.l - pad.r;
+//   const iH = h - pad.t - pad.b;
+
+//   ctx.strokeStyle = 'rgba(33,150,243,0.8)';
+//   ctx.lineWidth = 1.5;
+//   ctx.beginPath();
+//   data.forEach((d, i) => {
+//     const px = pad.l + (i / (data.length - 1)) * iW;
+//     const py = pad.t + iH - (d / maxV) * iH;
+//     i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+//   });
+//   ctx.stroke();
+
+//   ctx.fillStyle = 'rgba(33,150,243,0.12)';
+//   ctx.beginPath();
+//   data.forEach((d, i) => {
+//     const px = pad.l + (i / (data.length - 1)) * iW;
+//     const py = pad.t + iH - (d / maxV) * iH;
+//     i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+//   });
+//   ctx.lineTo(pad.l + iW, pad.t + iH);
+//   ctx.lineTo(pad.l, pad.t + iH);
+//   ctx.closePath();
+//   ctx.fill();
+
+//   const window2 = 8;
+//   ctx.strokeStyle = 'rgba(244,67,54,0.9)';
+//   ctx.lineWidth = 2;
+//   ctx.beginPath();
+//   for (let i = window2; i < data.length; i++) {
+//     const avg = data.slice(i - window2, i).reduce((a, b) => a + b, 0) / window2;
+//     const px = pad.l + (i / (data.length - 1)) * iW;
+//     const py = pad.t + iH - (avg / maxV) * iH;
+//     i === window2 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+//   }
+//   ctx.stroke();
+
+//   ctx.fillStyle = 'var(--color-text-tertiary, #888)';
+//   ctx.font = '9px Space Mono, monospace';
+//   ctx.fillText('0', pad.l - 18, pad.t + iH);
+//   ctx.fillText(maxV, pad.l - 18, pad.t + 6);
+//   ctx.fillText('Time →', pad.l + iW - 30, h - 4);
+// }
+
+// function drawCompare() {
+//   const c = document.getElementById('compareChart');
+//   if (!c) return;
+//   const ctx = c.getContext('2d');
+//   const w = c.width, h = c.height;
+//   const pad = { t: 14, b: 22, l: 30, r: 14 };
+
+//   const v8 = [], v9 = [];
+//   let a = 6, b2 = 5.8;
+//   for (let i = 0; i < 100; i++) {
+//     a += (Math.random() - 0.48) * 1.5; a = Math.max(1, Math.min(11, a)); v8.push(a);
+//     b2 += (Math.random() - 0.48) * 1.5; b2 = Math.max(1, Math.min(11, b2)); v9.push(b2);
+//   }
+
+//   const maxV = 12;
+//   const iW = w - pad.l - pad.r;
+//   const iH = h - pad.t - pad.b;
+
+//   [{ data: v8, color: '#378ADD' }, { data: v9, color: '#7F77DD' }].forEach(({ data, color }) => {
+//     ctx.strokeStyle = color;
+//     ctx.lineWidth = 1.5;
+//     ctx.globalAlpha = 0.85;
+//     ctx.beginPath();
+//     data.forEach((d, i) => {
+//       const px = pad.l + (i / (data.length - 1)) * iW;
+//       const py = pad.t + iH - (d / maxV) * iH;
+//       i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+//     });
+//     ctx.stroke();
+//     ctx.globalAlpha = 1;
+//   });
+
+//   ctx.fillStyle = 'var(--color-text-tertiary, #888)';
+//   ctx.font = '9px Space Mono, monospace';
+//   ctx.fillText('0', pad.l - 14, pad.t + iH + 4);
+//   ctx.fillText(maxV, pad.l - 18, pad.t + 6);
+//   ctx.fillText('Frame →', pad.l + iW - 36, h - 4);
+
+//   const avgV8 = (v8.reduce((a, b) => a + b, 0) / v8.length).toFixed(2);
+//   const avgV9 = (v9.reduce((a, b) => a + b, 0) / v9.length).toFixed(2);
+//   document.getElementById('v8avg').textContent = avgV8;
+//   document.getElementById('v9avg').textContent = avgV9;
+//   document.getElementById('compareVerdict').textContent = parseFloat(avgV8) >= parseFloat(avgV9) ? 'YOLOv8x ≥ YOLOv9e' : 'YOLOv9e ≥ YOLOv8x';
+// }
+
+function switchTab(el, tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  ['tab-visuals', 'tab-compare', 'tab-json'].forEach(id => {
+    document.getElementById(id).style.display = id === tabId ? 'block' : 'none';
+  });
+  if (tabId === 'tab-compare') {
+    console.log("Compare tab opened (no chart yet)");
+  }
+}
+
+function dlPlaceholder(key) {
+  alert(`In production: downloads ${key}.png from the backend output directory.`);
+}
+
+function downloadAll() {
+  alert('In production: triggers a ZIP download of all output files (tracked video, heatmap, trajectories, ball_trajectory, count_over_time, stats.json).');
+}
+
+function resetAll() {
+  videoFile = null; simulatedStats = null;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('upload-phase').style.display = 'block';
+  document.getElementById('video-preview-phase').style.display = 'none';
+  document.getElementById('processing-phase').style.display = 'none';
+  document.getElementById('results-phase').style.display = 'none';
+  document.getElementById('progressFill').style.width = '0%';
+  for (let i = 1; i <= 6; i++) {
+    const el = document.getElementById('ps' + i);
+    el.classList.remove('active', 'done');
+  }
+}
+</script>
