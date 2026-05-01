@@ -1,0 +1,15 @@
+torch 
+torchvision 
+torchaudio
+opencv-python 
+numpy 
+pandas 
+matplotlib
+transformers 
+ultralytics==8.3.57
+lapx
+supervision 
+boxmot
+fastapi 
+uvicorn 
+python-multipart
