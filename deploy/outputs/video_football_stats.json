@@ -16,6 +16,6 @@
   "track_buffer_frames": 90,
   "appearance_thresh": 0.25,
   "imgsz": 1280,
-  "processing_time_s": 730.64,
-  "processing_fps": 0.2
+  "processing_time_s": 429.18,
+  "processing_fps": 0.4
 }
